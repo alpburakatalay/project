@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akıllı Proje Üretici</title>
+
+<style>
+body{
+    background:#000000;
+    color:#00ff00;
+    font-family: "Courier New", monospace;
+    text-align:center;
+    padding:40px;
+}
+
+/* Başlık */
+h1{
+    font-size:32px;
+    text-shadow:0 0 10px #00ff00;
+    margin-bottom:40px;
+}
+
+/* Form alanları */
+select, input{
+    width:250px;
+    padding:12px;
+    margin:15px;
+    background:#000;
+    color:#00ff00;
+    border:2px solid #00ff00;
+    outline:none;
+    font-size:16px;
+}
+
+/* Seçim kutusu odak efekti */
+select:focus, input:focus{
+    box-shadow:0 0 10px #00ff00;
+}
+
+/* Buton */
+button{
+    padding:12px 30px;
+    background:#000;
+    color:#00ff00;
+    border:2px solid #00ff00;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#00ff00;
+    color:#000;
+    box-shadow:0 0 15px #00ff00;
+}
+
+/* Sonuç alanı */
+#sonuc{
+    margin-top:40px;
+    font-size:20px;
+    border-top:1px solid #00ff00;
+    padding-top:20px;
+    min-height:60px;
+    text-shadow:0 0 8px #00ff00;
+}
+
+.baslik{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.logo{
+    width:110px;
+    filter: drop-shadow(0 0 12px #00ff00);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="baslik">
+    <img src="logo.png" alt="Logo" class="logo">
+    <h1>AKILLI PROJE ÜRETİCİ</h1>
+</div>
+
+<label>Yaş:</label><br>
+<input type="number" id="yas" placeholder="Yaşını gir"><br>
+
+<label>Uzmanlık:</label><br>
+<select id="alan">
+    <option value="robotik">Robotik</option>
+    <option value="yazilim">Yazılım</option>
+    <option value="savunma">Savunma Teknolojisi</option>
+</select><br>
+
+<label>Zorluk:</label><br>
+<select id="zorluk">
+    <option value="kolay">Kolay</option>
+    <option value="orta">Orta</option>
+    <option value="zor">Zor</option>
+</select><br>
+
+<button onclick="uret()">PROJE ÜRET</button>
+
+<div id="sonuc"></div>
+
+<script>
+
+const projeler = {
+    robotik:{
+        kolay:["Basit LED sensörlü gece lambası yap.","Tek tuşla yanan LED gece lambası yap.",
+"LDR sensörlü ortam ışığına göre yanan lamba tasarla.",
+"Mesafe sensörlü mini park alarmı yap.",
+"Buton ile çalışan mini robot kol simülasyonu oluştur.",
+"Servo motor ile hareket eden mini kapı modeli yap.",
+"Dokununca ses çıkaran basit uyarı sistemi yap.",
+"Ultrasonik sensörle mesafe ölçer yap.",
+"Sıcaklığa göre LED rengi değiştiren sistem tasarla.",
+"Yağmur sensörü ile su algılama devresi kur.",
+"Titreşim algılayan mini alarm yap.",
+
+"Işık takip eden basit robot tasarla.",
+"Butonla yön değiştiren mini araba yap.",
+"Zamanlayıcı ile çalışan LED flaş sistemi kur.",
+"IR sensörlü engel algılayıcı modül yap.",
+"El yaklaştırınca çalışan mini fan yap.",
+"Potansiyometre ile hız kontrol sistemi tasarla.",
+"Mikrofon sensörüyle alkışta yanan LED yap.",
+"Geri sayım yapan basit ekran projesi yap.",
+"Röle ile düşük voltaj kontrol sistemi oluştur.",
+"Sıcaklık göstergeli mini masa paneli yap.",
+
+"Bluetooth olmadan kablolu kumanda sistemi kur.",
+"2 LED’li yön göstergesi yap.",
+"PWM ile LED parlaklık kontrolü yap.",
+"Mini otomatik gece lambası tasarla.",
+"Servo ile radar dönüş simülasyonu yap.",
+"Basit trafik lambası simülasyonu oluştur.",
+"Buton kombinasyonlu mini güvenlik sistemi yap.",
+"Nem sensörü ile toprak kontrol devresi kur.",
+"Karanlıkta otomatik çalışan alarm tasarla.",
+"Basit sayaç devresi yap.",
+
+"Kablosuz güç yerine USB ile sabit güç projesi tasarla.",
+"Buzzer frekans değiştirme sistemi yap.",
+"LED bar ile seviye göstergesi oluştur.",
+"Mini elektronik zar yap.",
+"Basit reaksiyon süresi ölçer yap.",
+"El çırpınca ışık açma devresi tasarla.",
+"Arduino ile voltaj ölçüm sistemi kur.",
+"Basit dijital termometre yap.",
+"IR kumandadan sinyal okuma projesi yap.",
+"Yavaş açılıp kapanan LED animasyonu oluştur.",
+
+"Butonlu mod değiştirme sistemi tasarla.",
+"USB’den çalışan masa LED paneli yap.",
+"Mini su seviye alarmı oluştur.",
+"Işığa göre servo hareketi tasarla.",
+"Sıcaklığa göre fan açma sistemi yap.",
+"Hareket sensörlü LED uyarı sistemi kur.",
+"Mini elektronik kronometre yap.",
+"LED matrix ile basit yazı gösterme projesi tasarla.",
+"Tek tuşlu modlu ışık sistemi yap.",
+"Prototip mini güvenlik paneli oluştur."
+],
+        orta:["Engel algılayan mini robot yap.","Bluetooth kontrollü araba tasarla.",
+"Engelden kaçan otonom robot yap.",
+"Çizgi izleyen robot geliştir.",
+"Bluetooth ile LED kontrol sistemi oluştur.",
+"OLED ekranlı sensör paneli yap.",
+"Servo kontrollü mini robot kol tasarla.",
+"RF kumandalı mini araç yap.",
+"Mesafe ölçüp ekranda gösteren sistem kur.",
+"Sıcaklık ve nem verilerini kayıt eden sistem yap.",
+"4 butonlu mod seçmeli kontrol paneli tasarla.",
+
+"Mini otomatik sera takip sistemi yap.",
+"PID mantığıyla hız kontrol denemesi yap.",
+"Işık yoğunluğunu grafikle gösteren sistem tasarla.",
+"Bluetooth üzerinden veri gönderme projesi yap.",
+"Ultrasonik sensörlü akıllı park sistemi tasarla.",
+"Servo ile otomatik bariyer sistemi kur.",
+"Hareket algıladığında kamera simülasyonu başlatan sistem yap.",
+"LCD ekranlı güvenlik paneli oluştur.",
+"Şifreli buton giriş sistemi tasarla.",
+"Sıcaklık eşik değerinde alarm veren sistem kur.",
+
+"Mini radar tarama animasyonu yap.",
+"Joystick kontrollü robot araba tasarla.",
+"Akım sensörü ile yük ölçüm sistemi oluştur.",
+"RFID kartlı geçiş sistemi yap.",
+"Bluetooth ile servo konum ayarlama projesi geliştir.",
+"Veri grafiği gösteren Arduino sistemi yap.",
+"Nem değerine göre sulama kontrol simülasyonu oluştur.",
+"Otomatik fan kontrol sistemi tasarla.",
+"EEPROM’a veri kayıt eden mini sistem yap.",
+"IR kumanda ile mod değiştirilen proje geliştir.",
+
+"Geri viteste otomatik uyarı veren araç simülasyonu yap.",
+"Çok sensörlü masa kontrol paneli tasarla.",
+"Mini yangın algılama sistemi kur.",
+"Dijital pusula modülü ile yön bulma projesi yap.",
+"LDR ile güneş paneli yönlendirme simülasyonu geliştir.",
+"Buzzer ile melodi çalan sistem tasarla.",
+"Kombinasyon kilitli servo kapı projesi yap.",
+"Basit PID sıcaklık kontrol denemesi yap.",
+"WiFi modülü ile veri gönderme projesi oluştur.",
+"Akıllı çöp kutusu kapağı tasarla.",
+
+"Ses sensörü ile motor hız ayarlama sistemi kur.",
+"Servo kontrollü mini vinç maketi yap.",
+"Ultrasonik ile sıvı seviye ölçer tasarla.",
+"LED matrix ile kayan yazı sistemi geliştir.",
+"Bluetooth terminal üzerinden komut alan sistem yap.",
+"Mini hava kalitesi simülasyon paneli oluştur.",
+"Joystick ile servo koordinat kontrolü yap.",
+"Otomatik karanlıkta aktif olan güvenlik sistemi tasarla.",
+"Batarya seviye izleme sistemi oluştur.",
+"Çok modlu otonom–manuel geçişli robot sistemi yap."],
+        zor:["Otonom çizgi izleyen robot yap.","Otonom haritalama yapan mini robot geliştir.",
+"PID kontrollü çizgi izleyen robot tasarla.",
+"IMU sensörlü denge robotu yap.",
+"Engel tanıma algoritmalı robot geliştir.",
+"WiFi üzerinden canlı veri izleme sistemi kur.",
+"Otonom rota planlayan araç simülasyonu yap.",
+"Çok sensörlü veri birleştirme (sensor fusion) denemesi yap.",
+"Kameralı renk takip eden robot tasarla.",
+"Bluetooth + WiFi hibrit kontrol sistemi oluştur.",
+"Uzaktan güncellenebilen robot kontrol yazılımı geliştir.",
+
+"Otonom mini drone simülasyonu yap.",
+"Lidar benzeri tarama animasyonu geliştir.",
+"Gerçek zamanlı veri grafiği dashboard'u tasarla.",
+"Makine öğrenmesi simülasyonlu karar sistemi oluştur.",
+"Otonom park manevrası algoritması yaz.",
+"Yüz tanıma simülasyonlu güvenlik paneli yap.",
+"Mobil uygulama ile robot kontrol sistemi kur.",
+"Akıllı enerji yönetimli robot tasarla.",
+"Kendi kendini dengeleyen iki teker robot yap.",
+"Çok eksenli servo koordinasyon sistemi geliştir.",
+
+"Gerçek zamanlı hata tespit sistemi tasarla.",
+"RF sinyal gücü analiz paneli oluştur.",
+"Otonom hedef takip sistemi geliştir.",
+"PID hız kontrol algoritması optimize et.",
+"Otonom kurtarma robotu konsepti tasarla.",
+"Batarya verim analiz sistemi kur.",
+"Akıllı görev önceliklendirme algoritması yaz.",
+"Çok katmanlı güvenlik doğrulama sistemi oluştur.",
+"Robot için modüler donanım mimarisi tasarla.",
+"Web tabanlı robot izleme paneli geliştir.",
+
+"Ses komutlu otonom hareket sistemi yap.",
+"Gerçek zamanlı veri kaydı ve analiz sistemi kur.",
+"Gömülü sistem optimizasyon projesi geliştir.",
+"Otonom engel sınıflandırma sistemi tasarla.",
+"GPS simülasyonlu konum takip robotu yap.",
+"IoT bağlantılı robot kontrol altyapısı oluştur.",
+"Dinamik hız dengeleme sistemi tasarla.",
+"Gerçek zamanlı akım–voltaj izleme sistemi geliştir.",
+"Çoklu görev (multitasking) robot yazılımı yaz.",
+"Robotlar arası veri iletişim sistemi kur.",
+
+"Otonom devriye simülasyon sistemi tasarla.",
+"Yapay zekâ destekli karar ağacı oluştur.",
+"Robot için web tabanlı komut konsolu yap.",
+"Gerçek zamanlı harita güncelleme algoritması geliştir.",
+"Adaptif öğrenme simülasyon sistemi tasarla.",
+"İleri seviye servo senkronizasyon projesi yap.",
+"Akıllı acil durum yönetim algoritması oluştur.",
+"Veri görselleştirmeli kontrol arayüzü geliştir.",
+"Kendi kendini kalibre eden sensör sistemi yap.",
+"Profesyonel seviye robot kontrol paneli tasarla."]
+    },
+    yazilim:{
+        kolay:["To-do list web uygulaması yap.","Basit yapılacaklar listesi (to-do list) yap.",
+"Rastgele şifre üretici tasarla.",
+"Basit not alma uygulaması yap.",
+"Sayı tahmin oyunu geliştir.",
+"Kronometre uygulaması yap.",
+"Geri sayım sayacı oluştur.",
+"Hava durumu arayüz tasarımı yap.",
+"Rastgele motivasyon sözü sitesi yap.",
+"Basit hesap makinesi oluştur.",
+"Renk seçici (color picker) uygulaması geliştir.",
+
+"Yazı büyütüp küçülten araç yap.",
+"Karanlık/aydınlık mod değiştiren site tasarla.",
+"Basit blog taslağı oluştur.",
+"Kullanıcıdan isim alıp selamlayan site yap.",
+"Yaşa göre kategori öneren sistem yap.",
+"Basit quiz uygulaması geliştir.",
+"Tıklama sayacı yap.",
+"Metin içindeki kelime sayısını bulan uygulama yap.",
+"Zaman gösteren dijital saat yap.",
+"Basit takvim arayüzü oluştur.",
+
+"Random proje öneri aracı geliştir.",
+"Basit portföy sitesi tasarla.",
+"Şifre doğrulama sistemi yap.",
+"Arama çubuğu filtreleme uygulaması geliştir.",
+"Basit puan toplama oyunu yap.",
+"Form verisi doğrulama sistemi tasarla.",
+"Dosya uzantısı kontrol aracı geliştir.",
+"Rastgele arka plan değiştiren site yap.",
+"Favori renk kaydetme aracı yap.",
+"Metin ters çevirme uygulaması geliştir.",
+
+"Emoji seçici uygulama yap.",
+"Basit chatbot arayüzü tasarla.",
+"Rastgele şehir seçici yap.",
+"Basit slider galerisi oluştur.",
+"Frekans hesaplayıcı arayüz yap.",
+"QR kod oluşturucu yap.",
+"Basit markdown editörü tasarla.",
+"Günlük hedef takibi sistemi oluştur.",
+"Basit kullanıcı profili kartı yap.",
+"Mouse hareketine göre efekt veren site yap.",
+
+"Basit alarm uygulaması yap.",
+"Metin büyük/küçük harf dönüştürücü yap.",
+"Sayı çift/tek kontrol aracı geliştir.",
+"Rastgele sayı üretici yap.",
+"Basit skor tablosu oluştur.",
+"JSON veri gösterim paneli yap.",
+"Basit giriş ekranı tasarla.",
+"Link kısaltma arayüzü tasarla.",
+"Metin şifreleyici (basit) geliştir.",
+"Basit proje fikir jeneratörü yap."
+],
+        orta:["Görev takip ve puan sistemi yap.","Kullanıcı girişli görev takip sistemi yap.",
+"LocalStorage kullanan not uygulaması geliştir.",
+"Gerçek zamanlı filtreli arama sistemi yap.",
+"Çok kategorili quiz uygulaması geliştir.",
+"Puan sistemli mini oyun yap.",
+"Admin panel taslağı oluştur.",
+"Grafikli veri gösterim paneli yap.",
+"Kullanıcı kayıt sistemi oluştur.",
+"API'den veri çekme uygulaması geliştir.",
+"Gerçek zamanlı chat arayüzü simülasyonu yap.",
+
+"Şifre güç analiz sistemi oluştur.",
+"Takım skor takip uygulaması yap.",
+"Kategoriye göre proje öneri sistemi geliştir.",
+"Modüler site şablon sistemi tasarla.",
+"Web tabanlı hesap defteri yap.",
+"Oylama sistemi geliştir.",
+"Rol bazlı kullanıcı paneli yap.",
+"Dashboard tasarımı yap.",
+"Dinamik form oluşturucu geliştir.",
+"Basit CMS (içerik yönetim sistemi) yap.",
+
+"Veri filtreleme ve sıralama paneli yap.",
+"Dosya yükleme arayüzü geliştir.",
+"Markdown destekli blog sistemi yap.",
+"Kullanıcı puan yükseltme sistemi geliştir.",
+"Gerçek zamanlı grafik gösterim sistemi yap.",
+"API tabanlı hava durumu paneli yap.",
+"Kullanıcı ayarlarını kaydetme sistemi tasarla.",
+"PDF çıktı üreten web uygulaması yap.",
+"Oyun skor kaydetme sistemi yap.",
+"Takvim tabanlı görev planlama uygulaması geliştir.",
+
+"Sözlük benzeri veri arama uygulaması yap.",
+"Favori listesi sistemi oluştur.",
+"Mini sosyal medya arayüzü tasarla.",
+"Chat mesaj geçmişi kaydı yap.",
+"Sürükle bırak (drag-drop) sistemi geliştir.",
+"Kullanıcı yetkilendirme sistemi yap.",
+"Duyuru paneli oluştur.",
+"Dinamik istatistik gösterge paneli tasarla.",
+"Çoklu tema destekli site yap.",
+"E-posta doğrulama sistemi simülasyonu geliştir.",
+
+"Online test sistemi yap.",
+"Gerçek zamanlı sayaç paneli oluştur.",
+"Kişisel portföy yönetim uygulaması geliştir.",
+"Proje paylaşım platformu taslağı yap.",
+"Web tabanlı çizim aracı oluştur.",
+"Dosya önizleme paneli yap.",
+"Kategori filtreli galeri oluştur.",
+"Gerçek zamanlı bildirim simülasyonu yap.",
+"Veri dışa aktarma sistemi geliştir.",
+"Küçük çaplı proje yönetim sistemi yap."
+],
+        zor:["Yapay zekâ destekli proje öneri sistemi geliştir.","Çok kullanıcılı proje yönetim platformu geliştir.",
+"Gerçek zamanlı veri akış dashboard'u tasarla.",
+"Rol bazlı yetkilendirme sistemi yap.",
+"WebSocket tabanlı canlı chat sistemi kur.",
+"Küçük ölçekli e-ticaret altyapısı tasarla.",
+"Makine öğrenmesi öneri simülasyonu geliştir.",
+"API tabanlı veri analiz platformu yap.",
+"Dinamik içerik yönetim sistemi geliştir.",
+"Oyun içi çok oyunculu altyapı simülasyonu yap.",
+"Gerçek zamanlı bildirim sistemi tasarla.",
+
+"Bulut veritabanlı uygulama geliştir.",
+"JWT tabanlı kimlik doğrulama sistemi yap.",
+"Progressive Web App (PWA) oluştur.",
+"Kullanıcı davranış analizi sistemi geliştir.",
+"Yapay zekâ destekli metin öneri aracı tasarla.",
+"Gerçek zamanlı grafik analiz paneli yap.",
+"Veri senkronizasyon sistemi geliştir.",
+"Yük dengeleme simülasyonu tasarla.",
+"Çok katmanlı API mimarisi oluştur.",
+"Gerçek zamanlı oyun skorlama altyapısı kur.",
+
+"Web tabanlı kod editörü geliştir.",
+"Bulut dosya depolama sistemi yap.",
+"Kullanıcı log takip sistemi oluştur.",
+"Otomatik veri raporlama sistemi tasarla.",
+"Gerçek zamanlı güvenlik izleme paneli geliştir.",
+"Veri şifreleme altyapısı tasarla.",
+"Chatbot altyapı sistemi oluştur.",
+"Makine öğrenmesi veri ön işleme aracı yap.",
+"Gerçek zamanlı IoT veri paneli geliştir.",
+"Modüler web uygulama mimarisi kur.",
+
+"Çoklu dil destekli web platformu geliştir.",
+"Otomatik test sistemi altyapısı oluştur.",
+"SaaS tabanlı mini platform tasarla.",
+"Gerçek zamanlı performans izleme paneli yap.",
+"GraphQL API tabanlı sistem geliştir.",
+"Dinamik modül yükleme sistemi kur.",
+"Web tabanlı proje IDE’si tasarla.",
+"Kullanıcı davranışı analiz dashboard'u yap.",
+"Gerçek zamanlı veri sıkıştırma simülasyonu geliştir.",
+"API güvenlik test paneli oluştur.",
+
+"Yapay zekâ destekli öneri algoritması geliştir.",
+"Gerçek zamanlı veri madenciliği simülasyonu yap.",
+"Dağıtık sistem mimarisi tasarla.",
+"Otonom görev planlama yazılımı geliştir.",
+"Kendi mini framework'ünü tasarla.",
+"Mikro servis mimarisi simülasyonu oluştur.",
+"Yüksek trafikli sistem tasarım konsepti geliştir.",
+"Web tabanlı simülasyon motoru yap.",
+"Veri görselleştirme kütüphanesi geliştir.",
+"Profesyonel seviyede yazılım kontrol paneli tasarla."]
+    },
+    savunma:{
+        kolay:["Pasif radar simülasyon arayüzü tasarla.","Radar tarama animasyon arayüzü yap.",
+"Sinyal gücü gösterge paneli tasarla.",
+"Hareket algılama simülasyonu oluştur.",
+"IR sensörlü basit alarm sistemi kur.",
+"LED ile durum göstergesi paneli yap.",
+"Mini devriye robot simülasyonu tasarla.",
+"Şifreli giriş paneli oluştur.",
+"Alarm zamanlayıcı sistemi yap.",
+"Basit termal kamera arayüz tasarımı geliştir.",
+"RF sinyal seviye göstergesi simülasyonu oluştur.",
+
+"Harita üzerinde nokta işaretleme sistemi yap.",
+"Basit güvenlik dashboard tasarla.",
+"Durum kodu gösterim paneli oluştur.",
+"Sinyal tespit log ekranı yap.",
+"Mini komuta merkezi arayüzü tasarla.",
+"Kamera izleme simülasyonu oluştur.",
+"Hareketli hedef animasyonu yap.",
+"Görev takip ekranı oluştur.",
+"Basit yüz tanıma simülasyonu tasarla.",
+"İzinsiz giriş uyarı paneli yap.",
+
+"Güvenlik seviyesi göstergesi oluştur.",
+"Alarm geçmişi kayıt ekranı yap.",
+"Sıcaklık eşik alarm simülasyonu geliştir.",
+"Mini sınır kontrol ekranı tasarla.",
+"Drone izleme animasyon paneli yap.",
+"RFID kartlı geçiş simülasyonu tasarla.",
+"Devriye zaman sayacı oluştur.",
+"Sinyal yoğunluk çubuğu paneli yap.",
+"Basit veri log sistemi oluştur.",
+"Gizli mesaj çözme arayüzü tasarla.",
+
+"Koordinat girme ve gösterme sistemi yap.",
+"Alarm reset paneli oluştur.",
+"Güvenli alan simülasyon haritası tasarla.",
+"Mini izleme terminali yap.",
+"Sensör aktif/pasif kontrol paneli oluştur.",
+"Acil durum buton simülasyonu tasarla.",
+"Durum renk kod sistemi yap.",
+"Kamera açı değiştirme simülasyonu oluştur.",
+"Basit tehdit seviye göstergesi tasarla.",
+"Güvenlik alarm LED paneli yap.",
+
+"Veri aktarım simülasyon arayüzü oluştur.",
+"Sinyal tarama başlat/durdur paneli yap.",
+"Mini görev atama ekranı tasarla.",
+"Uyarı bildirim sistemi oluştur.",
+"Güvenlik protokol ekranı tasarla.",
+"Tarama süresi sayacı yap.",
+"Harita üzerinde rota çizme sistemi oluştur.",
+"Veri temizleme (reset) paneli yap.",
+"Gizli kod çözme mini uygulama geliştir.",
+"Savunma sistemi konsept tasarım arayüzü yap."
+],
+        orta:["Sinyal güç göstergeli tarama ekranı yap.","Otonom devriye robot simülasyonu geliştir.",
+"Sinyal gücü grafik analiz paneli yap.",
+"Çok sensörlü güvenlik dashboard'u tasarla.",
+"RF sinyal izleme sistemi oluştur.",
+"Koordinat bazlı hedef takip sistemi yap.",
+"Şifreli giriş + alarm sistemi geliştir.",
+"Canlı veri güncellenen radar ekranı tasarla.",
+"Görev önceliklendirme paneli yap.",
+"Hareketli harita izleme sistemi oluştur.",
+"Mobil kontrollü güvenlik paneli geliştir.",
+
+"Veri şifreleme simülasyonu oluştur.",
+"Alarm tetikleme analiz sistemi yap.",
+"Kritik eşik izleme paneli tasarla.",
+"Mini operasyon planlama arayüzü geliştir.",
+"Termal izleme simülasyonu yap.",
+"Çok katmanlı güvenlik seviyesi sistemi oluştur.",
+"GPS tabanlı konum takip simülasyonu tasarla.",
+"Kamera veri log analiz paneli yap.",
+"Görev süresi optimizasyon sistemi geliştir.",
+"Sinyal anomali tespiti arayüzü tasarla.",
+
+"Drone rota takip simülasyonu oluştur.",
+"Veri görselleştirme dashboard'u geliştir.",
+"RFID + kullanıcı doğrulama sistemi yap.",
+"Alarm filtreleme sistemi tasarla.",
+"Komuta kontrol merkez arayüzü oluştur.",
+"Mini savunma IoT paneli geliştir.",
+"Akıllı devriye zamanlama sistemi yap.",
+"Hedef sınıflandırma simülasyonu tasarla.",
+"Web tabanlı güvenlik komut konsolu geliştir.",
+"Görev kayıt ve arşiv sistemi oluştur.",
+
+"Gerçek zamanlı tehdit seviyesi analizi tasarla.",
+"Güvenlik veri karşılaştırma sistemi yap.",
+"Harita üzerinde risk analizi paneli oluştur.",
+"Çoklu kamera simülasyon ekranı tasarla.",
+"Sinyal veri analizi grafiği geliştir.",
+"Akıllı alarm öncelik sıralama sistemi yap.",
+"Güvenlik raporlama paneli oluştur.",
+"Hata tespit sistemi geliştir.",
+"Alarm otomatik kapatma algoritması yaz.",
+"Savunma sistem testi simülasyonu oluştur.",
+
+"Gerçek zamanlı görev izleme paneli tasarla.",
+"Sinyal yoğunluk haritası oluştur.",
+"Tehdit analiz rapor ekranı yap.",
+"Kritik durum simülasyon motoru geliştir.",
+"Koordinat şifreleme sistemi tasarla.",
+"Yetkili kullanıcı yönetim paneli oluştur.",
+"Operasyon log analiz sistemi geliştir.",
+"Savunma sistemi performans ölçüm paneli yap.",
+"Gerçek zamanlı komut işleme sistemi oluştur.",
+"Mini savunma senaryo simülasyonu geliştir."
+],
+        zor:["Gerçek zamanlı veri grafik animasyonu oluştur.","Gerçek zamanlı komuta kontrol sistemi geliştir.",
+"Çoklu sensör veri birleştirme sistemi tasarla.",
+"Sinyal anomali tespit algoritması yaz.",
+"Otonom tehdit değerlendirme simülasyonu oluştur.",
+"Veri analiz tabanlı risk puan sistemi geliştir.",
+"Gerçek zamanlı radar veri işleme paneli tasarla.",
+"AI tabanlı tehdit sınıflandırma simülasyonu geliştir.",
+"Dağıtık savunma izleme sistemi oluştur.",
+"Dinamik görev planlama algoritması yaz.",
+"Gerçek zamanlı hedef takip yazılımı tasarla.",
+
+"Veri şifreleme ve güvenli aktarım altyapısı oluştur.",
+"Tehdit önceliklendirme motoru geliştir.",
+"Bulut tabanlı savunma paneli tasarla.",
+"Gerçek zamanlı operasyon yönetim sistemi kur.",
+"Sinyal manipülasyon tespit algoritması yaz.",
+"Çok katmanlı güvenlik doğrulama sistemi geliştir.",
+"Dağıtık veri analiz mimarisi tasarla.",
+"AI destekli risk tahmin sistemi oluştur.",
+"Otonom görev dağıtım sistemi geliştir.",
+"Performans optimizasyon algoritması yaz.",
+
+"Gerçek zamanlı veri madenciliği simülasyonu tasarla.",
+"Savunma sistemi simülasyon motoru geliştir.",
+"Veri korelasyon analiz yazılımı oluştur.",
+"Operasyonel karar destek sistemi tasarla.",
+"Sinyal parazit analiz aracı geliştir.",
+"Kritik durum otomatik müdahale algoritması yaz.",
+"Akıllı görev senaryo üretici sistemi oluştur.",
+"Gerçek zamanlı tehdit haritalama sistemi tasarla.",
+"Savunma verisi tahmin modeli geliştir.",
+"Yüksek trafikli izleme sistemi mimarisi kur.",
+
+"Dağıtık komut kontrol ağı simülasyonu yap.",
+"Gerçek zamanlı güvenlik izleme altyapısı tasarla.",
+"Dinamik sensör kalibrasyon sistemi geliştir.",
+"AI destekli savunma dashboard'u yap.",
+"Tehdit davranış analizi motoru oluştur.",
+"Veri güvenliği test simülasyonu tasarla.",
+"Otonom acil durum yönetim sistemi geliştir.",
+"Sinyal frekans analiz motoru tasarla.",
+"Karar ağacı tabanlı savunma algoritması yaz.",
+"Gerçek zamanlı görev senkronizasyon sistemi kur.",
+
+"Savunma sistem simülasyon platformu tasarla.",
+"Çoklu kullanıcı kontrollü komuta sistemi geliştir.",
+"Dinamik risk değerlendirme algoritması yaz.",
+"Yapay zekâ destekli savunma optimizasyonu yap.",
+"Veri yoğunluk analiz aracı oluştur.",
+"Gerçek zamanlı operasyon simülasyon motoru geliştir.",
+"Savunma ağı güvenlik modeli tasarla.",
+"Tehdit tepki süresi analiz sistemi yap.",
+"Adaptif öğrenen savunma paneli geliştir.",
+"Profesyonel seviyede savunma kontrol merkezi yazılımı tasarla."
+]
+    }
+};
+
+function uret(){
+    const alan = document.getElementById("alan").value;
+    const zorluk = document.getElementById("zorluk").value;
+
+    const liste = projeler[alan][zorluk];
+
+    const rastgele = liste[Math.floor(Math.random()*liste.length)];
+
+    document.getElementById("sonuc").innerHTML =
+        "<h2>Önerilen Proje:</h2><p>"+rastgele+"</p>";
+}
+
+</script>
+
+</body>
+</html>
